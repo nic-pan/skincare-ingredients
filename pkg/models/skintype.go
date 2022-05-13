@@ -9,8 +9,8 @@ var db *gorm.DB
 
 type SkinType struct {
 	gorm.Model
-	ID   int    `gorm:""json:"id"`
-	Name string `json:"name"`
+	Name            string `gorm:"unique"json:"name"`
+	Characteristics string `json:"characteristics"`
 }
 
 func init() {
@@ -19,10 +19,15 @@ func init() {
 	db.AutoMigrate(&SkinType{})
 }
 
-func (st *SkinType) CreateSkinType() *SkinType {
+func (st *SkinType) CreateSkinType() (*SkinType, error) {
 	db.NewRecord(st)
-	db.Create(&st)
-	return st
+	err := db.Create(&st).Error
+	return st, err
+}
+
+func (st *SkinType) UpdateSkinType() (*SkinType, error) {
+	err := db.Save(&st).Error
+	return st, err
 }
 
 func GetAllSkinTypes() []SkinType {
@@ -34,6 +39,12 @@ func GetAllSkinTypes() []SkinType {
 func GetSkinTypeById(Id int64) (*SkinType, *gorm.DB) {
 	var skinType SkinType
 	db := db.Where("ID=?", Id).Find(&skinType)
+	return &skinType, db
+}
+
+func GetSkinTypeByName(Name string) (*SkinType, *gorm.DB) {
+	var skinType SkinType
+	db := db.Where("Name=?", Name).Find(&skinType)
 	return &skinType, db
 }
 
