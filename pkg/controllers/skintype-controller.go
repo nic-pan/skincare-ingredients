@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -52,6 +53,11 @@ func AddSkinType(writer http.ResponseWriter, request *http.Request) {
 	SkinType := &models.SkinType{}
 	utils.ParseBody(request, SkinType)
 
+	if SkinType.Name == "" {
+		writer.Write([]byte("Name cannot be empty."))
+		writer.WriteHeader((http.StatusBadRequest))
+		return
+	}
 	st, err := SkinType.CreateSkinType()
 
 	if st.ID > 0 {
@@ -87,13 +93,14 @@ func UpdateSkinType(writer http.ResponseWriter, request *http.Request) {
 
 		st, _ := models.GetSkinTypeById(updateId)
 		if st != nil {
+			fmt.Print(st.ID)
 			if SkinTypeToUpdate.Name != "" {
 				st.Name = SkinTypeToUpdate.Name
 			}
 			if SkinTypeToUpdate.Characteristics != "" {
 				st.Characteristics = SkinTypeToUpdate.Characteristics
 			}
-			savedST, err := SkinTypeToUpdate.UpdateSkinType()
+			savedST, err := st.UpdateSkinType()
 			if err == nil {
 				res, _ := json.Marshal(savedST)
 

@@ -9,7 +9,7 @@ var db *gorm.DB
 
 type SkinType struct {
 	gorm.Model
-	Name            string `gorm:"unique"json:"name"`
+	Name            string `gorm:"unique;not null;type:varchar(100);default:null"json:"name"`
 	Characteristics string `json:"characteristics"`
 }
 
@@ -38,7 +38,10 @@ func GetAllSkinTypes() []SkinType {
 
 func GetSkinTypeById(Id int64) (*SkinType, *gorm.DB) {
 	var skinType SkinType
-	db := db.Where("ID=?", Id).Find(&skinType)
+	db := db.Where("ID=?", Id).First(&skinType)
+	if err := db.Error; err != nil && err.Error() == "record not found" {
+		return nil, db
+	}
 	return &skinType, db
 }
 
