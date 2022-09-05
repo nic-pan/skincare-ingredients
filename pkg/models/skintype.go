@@ -9,7 +9,7 @@ var db *gorm.DB
 
 type SkinType struct {
 	gorm.Model
-	Name            string `gorm:"unique;not null;type:varchar(100);default:null"json:"name"`
+	Name            string `gorm:"unique;not null;type:varchar(100)"json:"name"`
 	Characteristics string `json:"characteristics"`
 }
 
@@ -21,7 +21,8 @@ func init() {
 
 func (st *SkinType) CreateSkinType() (*SkinType, error) {
 	db.NewRecord(st)
-	err := db.Create(&st).Error
+	db := db.Create(&st)
+	err := db.Error
 	return st, err
 }
 
@@ -36,7 +37,7 @@ func GetAllSkinTypes() []SkinType {
 	return SkinTypes
 }
 
-func GetSkinTypeById(Id int64) (*SkinType, *gorm.DB) {
+func GetSkinTypeById(Id uint) (*SkinType, *gorm.DB) {
 	var skinType SkinType
 	db := db.Where("ID=?", Id).First(&skinType)
 	if err := db.Error; err != nil && err.Error() == "record not found" {
@@ -51,8 +52,8 @@ func GetSkinTypeByName(Name string) (*SkinType, *gorm.DB) {
 	return &skinType, db
 }
 
-func DeleteSkinType(Id int64) *SkinType {
-	var skinType SkinType
-	db.Where("ID=?", Id).Delete(skinType)
-	return &skinType
+func DeleteSkinType(Id uint) *gorm.DB {
+	var skinType SkinType = SkinType{}
+	db := db.Where("ID=?", Id).Unscoped().Delete(&skinType)
+	return db
 }

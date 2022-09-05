@@ -7,12 +7,10 @@ import (
 
 type Combination struct {
 	gorm.Model
-	Ingredient1_id uint
-	Ingredient2_id uint
-	Ingredient1    Ingredient `gorm:"foreignKey:Ingredient1_id"json:ingredient1`
-	Ingredient2    Ingredient `gorm:"foreignKey:Ingredient2_id"json:ingredient2`
-	IsHealthy      bool       `json:isHealthy`
-	Reason         string     `json:reason`
+	Ingredient1 uint   `gorm:"foreignKey:Ingredient1_id"json:ingredient1_id`
+	Ingredient2 uint   `gorm:"foreignKey:Ingredient2_id"json:ingredient2_id`
+	IsHealthy   bool   `json:isHealthy`
+	Reason      string `json:reason`
 }
 
 func init() {

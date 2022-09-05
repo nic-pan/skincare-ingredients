@@ -93,7 +93,6 @@ func UpdateSkinType(writer http.ResponseWriter, request *http.Request) {
 
 		st, _ := models.GetSkinTypeById(updateId)
 		if st != nil {
-			fmt.Print(st.ID)
 			if SkinTypeToUpdate.Name != "" {
 				st.Name = SkinTypeToUpdate.Name
 			}
@@ -129,7 +128,12 @@ func DeleteSkinType(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		deleteId, _ := utils.ParseID(id)
 
-		models.DeleteSkinType(deleteId)
+		db := models.DeleteSkinType(deleteId)
+		if db.Error != nil {
+			fmt.Println(db.Error.Error())
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)

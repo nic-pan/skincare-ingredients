@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/nic_pan/skincare-ingredients/pkg/models"
@@ -39,14 +41,52 @@ func GetIngredient(writer http.ResponseWriter, request *http.Request) {
 }
 
 func AddIngredient(writer http.ResponseWriter, request *http.Request) {
-	ingredient := &models.Ingredient{}
-	utils.ParseBody(request, ingredient)
-	ingr := ingredient.CreateIngredient()
-	res, _ := json.Marshal(ingr)
+	// ingredient := make([]map[string]string, 0)
+	ingredientRequest, _ := utils.ParseBodyToMap(request)
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
-	writer.Write(res)
+	if len(ingredientRequest["name"]) < 1 {
+		writer.Write([]byte("Name cannot be empty."))
+		writer.WriteHeader((http.StatusBadRequest))
+		return
+	}
+	if len(ingredientRequest["skinTypes"]) > 0 {
+		skinTypesRequest, _ := utils.ParseStringToArray(string(ingredientRequest["skinTypes"]))
+		skinTypesArray := make([]models.SkinType, len(skinTypesRequest))
+		fmt.Println(len(skinTypesRequest))
+		for index, skinType := range skinTypesRequest {
+			fmt.Println(string(skinType))
+			st, _ := models.GetSkinTypeByName(string(skinType))
+			skinTypesArray[index] = *st
+			fmt.Println(index, skinType)
+		}
+		ingredient := &models.Ingredient{}
+		ingredient.Name = utils.TrimQuotes(string(ingredientRequest["name"]))
+		ingredient.Effect = utils.TrimQuotes(string(ingredientRequest["effects"]))
+		ingredient.SkinTypes = skinTypesArray
+		str, _ := json.Marshal(ingredient)
+		fmt.Println(string(str))
+
+		ingr, err := ingredient.CreateIngredient()
+		if ingr.ID > 0 {
+			res, _ := json.Marshal(ingr)
+
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusOK)
+			writer.Write(res)
+		} else {
+			if err != nil {
+				if strings.Contains(err.Error(), "1062") {
+					writer.WriteHeader(http.StatusBadRequest)
+					writer.Write([]byte("Ingredient with such name already exists."))
+				} else {
+					writer.WriteHeader(http.StatusInternalServerError)
+				}
+			} else {
+				writer.WriteHeader(http.StatusBadRequest)
+			}
+		}
+	}
+
 }
 
 func UpdateIngredient(writer http.ResponseWriter, request *http.Request) {
@@ -65,12 +105,28 @@ func UpdateIngredient(writer http.ResponseWriter, request *http.Request) {
 			if IngredientToUpdate.Name != "" {
 				ingr.Name = IngredientToUpdate.Name
 			}
+			if IngredientToUpdate.Effect != "" {
+				ingr.Effect = IngredientToUpdate.Effect
+			}
+			// if IngredientToUpdate.ForSkinTypes != nil {
+			// ingr.ForSkinTypes = IngredientToUpdate.ForSkinTypes
+			// }
 
-			res, _ := json.Marshal(ingr)
+			savedIngr, err := ingr.UpdateIngredient()
+			if err == nil {
+				res, _ := json.Marshal(savedIngr)
 
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			writer.Write(res)
+				writer.Header().Set("Content-Type", "application/json")
+				writer.WriteHeader(http.StatusOK)
+				writer.Write(res)
+			} else {
+				if strings.Contains(err.Error(), "1062") {
+					writer.WriteHeader(http.StatusBadRequest)
+					writer.Write([]byte("Ingredient with such name already exists."))
+				} else {
+					writer.WriteHeader(http.StatusInternalServerError)
+				}
+			}
 		} else {
 			writer.WriteHeader(http.StatusNotFound)
 		}
@@ -85,7 +141,12 @@ func DeleteIngredient(writer http.ResponseWriter, request *http.Request) {
 	} else {
 		deleteId, _ := utils.ParseID(id)
 
-		models.DeleteIngredient(deleteId)
+		db := models.DeleteIngredient(deleteId)
+		if db.Error != nil {
+			fmt.Println(db.Error.Error())
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
