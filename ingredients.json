@@ -1,42 +1,93 @@
 [
+	{
+		"name": "AHA (alpha hydroxy acid)",
+        "effects": "water-soluble; targets signs of ageing and skin damage; renews skin radiance; exfoliates the top layer of the skin's surface; improves skin texture",
+		"skinTypes": [
+			"normal", "dry", "combination"
+		]
+	},
+	{
+		"name": "BHA (beta hydroxy acid)",
+        "effects": "oil-soluble; exfoliates below the skin's surface; unclogs pores; anti-inflammatory and anti-bacterial properties",
+		"skinTypes": [
+			"normal", "dry", "combination", "oily", "sensitive"
+		]
+	},
     {
-        "name": "retinol",
-        "effect": ""
-    },
+		"name": "PHA (poly hydroxy acid)",
+        "effects": "exfoliates gently, with less irritation; restores the healthy moisture barrier",
+		"skinTypes": [
+			"dry", "dehydrated", "sensitive"
+		]
+	},
+	{
+		"name": "retinol",
+		"effects": "anti-aging;boosts collagen production; brightens dark spots; reduces the look of fine lines and wrinkles",
+		"skinTypes": [
+			"normal"
+		]
+	},
     {
-        "name": "vitamin C",
-        "effect": ""
-    },
+		"name": "hyaluronic acid",
+        "effects": "naturally present in the skin; its concentrations increase when there is damage in need of repair (e.g. dry lips); binds to water to help retain moisture; has antibacterial properties",
+		"skinTypes": [
+			"normal", "oily", "dry", "sensitive", "combination", "dehydrated", "acne-prone"
+		]
+	},
+	{
+		"name": "salicylic acid",
+		"effects": "decongests pores; dissolves sebum for clearer, breakout-free skin; anti-inflammatory; helps reduce existing acne",
+		"skinTypes": [
+			"oily", "combination", "acne-prone"
+		]
+	},
     {
-        "name": "niacinamide",
-        "effect": ""
-    },
+		"name": "glycolic acid",
+		"effects": "lightens hyperpigmentation/sun damage; softens fine lines and wrinkles; dissolves dead skin; smoothes texture; stimulates collagen production; brightens the skin",
+		"skinTypes": [
+			"normal", "oily", "dry", "combination", "dehydrated", "acne-prone"
+		]
+	},
+	{
+		"name": "niancinamide",
+		"effects": "fades hyperpigmentation; reduces the appearance of wrinkles; minimises pores; regulates sebum production; strenghtens the skin's moisture barrier",
+		"skinTypes": [
+			"normal", "oily", "dry", "sensitive", "combination", "dehydrated", "acne-prone"
+		]
+	},
     {
-        "name": "salicylic acid",
-        "effect": ""
-    },
+		"name": "vitamin C",
+		"effects": "antioxidant protection; shields skin from age-accelerating free radicals; encourages collagen production; firms skin; reduces appearance of wrinkles; fades hyperpigmentation and dark spots",
+		"skinTypes": [
+			"normal", "oily", "dry", "sensitive", "combination", "dehydrated", "acne-prone"
+		]
+	},
     {
-        "name": "glycolic acid",
-        "effect": ""
-    },
-    {
-        "name": "vitamin E",
-        "effect": ""
-    },
-    {
-        "name": "hyaluronic acid",
-        "effect": ""
-    },
-    {
-        "name": "AHA (alpha hydroxy acid)",
-        "effect": ""
-    },
-    {
-        "name": "BHA (beta hydroxy acid)",
-        "effect": ""
-    },
-    {
-        "name": "SPF (sun protection factor)",
-        "effect": ""
-    }
+		"name": "vitamin E",
+		"effects": "moisturizes skin, smoothes and softens skin cells; protects skin from free radicals that cause premature ageing",
+		"skinTypes": [
+			"normal", "oily", "dry", "sensitive", "combination", "dehydrated", "acne-prone"
+		]
+	},
+	{
+		"name": "panthenol",
+		"effects": "prevents trans-epidermal water loss; supports a healthy moisture barrier",
+		"skinTypes": [
+			"dry", "sensitive", "dehydrated"
+		]
+	},
+	{
+		"name": "clay",
+		"effects": "extremely absorbent; instantly, but temporarily minimises the appearance of pores; mattifies oily skin; may help reduce frequency of breakouts",
+		"skinTypes": [
+			"combination", "oily"
+		]
+	},
+	{
+		"name": "argan oil",
+		"effects": "has moisturizing abilities that can be used on skin, hair and cuticles",
+		"skinTypes": [
+			"normal", "dry"
+		]
+	}
 ]
