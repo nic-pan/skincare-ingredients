@@ -1,5 +1,5 @@
 ## About this project
-Skin Care Ingredients is a simple app that provides information about the effects of using different skin care ingredients in combination - whether they are compatible or not and what issues to the skin they may cause if used together.
+Skin Care Ingredients is a simple app that stores information about ingredients used in skincare products, explaining which skin types they are suitable for, and which ingredients are healthy or not when used in combination.
 
 Built with:
 * ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
