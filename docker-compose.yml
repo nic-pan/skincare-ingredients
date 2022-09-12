@@ -1,0 +1,17 @@
+version: "3.0"
+
+services:
+  skincare_db:
+    image: mysql:8.0
+    volumes:
+      - "./data:/var/lib/mysql"
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: skincare_user
+      MYSQL_PASSWORD: skincare2022
+      MYSQL_DATABASE: skincare_ingredients
+
+    
