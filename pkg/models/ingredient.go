@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/nic_pan/skincare-ingredients/pkg/config"
 )
 
 type Ingredient struct {
@@ -10,12 +9,7 @@ type Ingredient struct {
 	Name      string     `gorm:"unique;not null;type:varchar(100)"json:name`
 	SkinTypes []SkinType `gorm:"many2many:skintypes_ingredients"json:skinTypes`
 	Effect    string     `json:effect`
-}
-
-func init() {
-	config.ConnectToDB()
-	db = config.GetDB()
-	db.AutoMigrate(&Ingredient{})
+	Slug      string     `json:slug`
 }
 
 func (Ingredient *Ingredient) CreateIngredient() (*Ingredient, error) {
@@ -41,6 +35,12 @@ func GetAllIngredients() []Ingredient {
 func GetIngredientById(Id uint) (*Ingredient, *gorm.DB) {
 	var Ingredient Ingredient
 	db := db.Where("ID=?", Id).Find(&Ingredient)
+	return &Ingredient, db
+}
+
+func GetIngredientByName(Name string) (*Ingredient, *gorm.DB) {
+	var Ingredient Ingredient
+	db := db.Where("Name=?", Name).Find(&Ingredient)
 	return &Ingredient, db
 }
 

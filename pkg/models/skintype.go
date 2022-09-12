@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/nic_pan/skincare-ingredients/pkg/config"
 )
 
 var db *gorm.DB
@@ -11,12 +10,7 @@ type SkinType struct {
 	gorm.Model
 	Name            string `gorm:"unique;not null;type:varchar(100)"json:"name"`
 	Characteristics string `json:"characteristics"`
-}
-
-func init() {
-	config.ConnectToDB()
-	db = config.GetDB()
-	db.AutoMigrate(&SkinType{})
+	Slug            string `json:slug`
 }
 
 func (st *SkinType) CreateSkinType() (*SkinType, error) {
