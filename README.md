@@ -23,9 +23,12 @@ Built with:
 ### Initial data:
 * <a href="./ingredients.json">ingredients.json</a>
 * <a href="./skinTypes.json">skinTypes.json</a>
+* <a href="./combinations.json">combinations.json</a>
 
 ## TODOs
 
 - [ ] Add Combinations API
-- [ ] Make slugs for URLs in UI
+- [ ] Add initial Combinations data
+- [ ] Design UI
 - [ ] Create UI
+- [ ] Make slugs for URLs in UI

@@ -1,0 +1,79 @@
+[
+    {
+        "ingredients": [
+            "vitamin C", "retinol"
+        ],
+        "compatible": true,
+        "reason": "brighten hyperpigmentation for luminous, glowy skin; encorage collagen production to reduce the appearance of wrinkles"
+    },
+    {
+        "ingredients": [
+            "AHA (alpha hydroxy acid)", "retinol"
+        ],
+        "compatible": false,
+        "reason": "irritation, redness, inflammation, peeling and/or dryness"
+    },
+    {
+        "ingredients": [
+            "BHA (beta hydroxy acid)", "retinol"
+        ],
+        "compatible": false,
+        "reason": "irritation, redness, inflammation, peeling and/or dryness"
+    },
+    {
+        "ingredients": [
+            "BHA (beta hydroxy acid)", "benzoyl peroxide"
+        ],
+        "compatible": false,
+        "reason": "irritation, redness, inflammation, peeling and/or dryness"
+    },
+    {
+        "ingredients": [
+            "AHA (alpha hydroxy acid)", "vitamin C"
+        ],
+        "compatible": false,
+        "reason": "irritation, redness, inflammation, peeling and/or dryness"
+    },
+    {
+        "ingredients": [
+            "BHA (beta hydroxy acid)", "vitamin C"
+        ],
+        "compatible": false,
+        "reason": "irritation, redness, inflammation, peeling and/or dryness"
+    },
+    {
+        "ingredients": [
+            "AHA (alpha hydroxy acid)", "vitamin C"
+        ],
+        "compatible": false,
+        "reason": "possible irritation"
+    },
+    {
+        "ingredients": [
+            "BHA (beta hydroxy acid)", "vitamin C"
+        ],
+        "compatible": false,
+        "reason": "possible irritation"
+    },
+    {
+        "ingredients": [
+            "retinol", "hyaluronic acid"
+        ],
+        "compatible":  true,
+        "reason": "skin regeneration"
+    },
+    {
+        "ingredients": [
+            "salicylic acid", "niancinamide"
+        ],
+        "compatible":  true,
+        "reason": "together fight acne"
+    },
+    {
+        "ingredients": [
+            "vitamin C", "niancinamide"
+        ],
+        "compatible":  false,
+        "reason": "irritation"
+    }
+]

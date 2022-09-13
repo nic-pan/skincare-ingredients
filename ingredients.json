@@ -89,5 +89,12 @@
 		"skinTypes": [
 			"normal", "dry"
 		]
+	},
+	{
+		"name": "benzoyl peroxide",
+		"effects": "kills any acne-causing bacteria; gets rid of excess oil and dead skin cells",
+		"skinTypes": [
+			"oily", "acne-prone"
+		]
 	}
 ]
