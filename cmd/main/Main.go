@@ -26,6 +26,7 @@ func startServer() {
 	})
 	routes.RegisterSkinTypeRoutes(router)
 	routes.RegisterIngredientRoutes(router)
+	routes.RegisterCombinationRoutes(router)
 
 	log.Fatal().Err(http.ListenAndServe(":8081", router))
 	log.Debug().Msg("Server started.")
