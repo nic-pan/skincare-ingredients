@@ -20,8 +20,11 @@ func GetAllCombinations(writer http.ResponseWriter, request *http.Request) {
 		resp = append(resp, convertedCombination)
 	}
 	response, _ := json.Marshal(resp)
-
 	writer.Header().Set("Content-Type", "application/json")
+	if string(response) == "null" {
+		writer.WriteHeader(http.StatusNoContent)
+		return
+	}
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(response)
 }
@@ -120,6 +123,25 @@ func AddCombination(writer http.ResponseWriter, request *http.Request) {
 				}
 			}
 		}
+	}
+}
+
+func DeleteCombination(writer http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+	id := params["id"]
+	if id == "" {
+		writer.WriteHeader(http.StatusBadRequest)
+	} else {
+		deleteId, _ := utils.ParseID(id)
+
+		_, db := models.DeleteCombination(deleteId)
+		if db.Error != nil {
+			writer.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
 	}
 }
 

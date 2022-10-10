@@ -37,8 +37,8 @@ func GetCombinationForIngredients(ingr1 *Ingredient, ingr2 *Ingredient) *Combina
 	return &Combination
 }
 
-func DeleteCombination(Id uint) *Combination {
+func DeleteCombination(Id uint) (*Combination, *gorm.DB) {
 	var Combination Combination
-	db.Where("ID=?", Id).Delete(Combination)
-	return &Combination
+	db := db.Where("ID=?", Id).Delete(Combination)
+	return &Combination, db
 }
