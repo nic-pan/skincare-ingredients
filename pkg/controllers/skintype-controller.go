@@ -12,15 +12,6 @@ import (
 )
 
 func GetAllSkinTypes(writer http.ResponseWriter, request *http.Request) {
-	// var skinTypes = []models.SkinType{
-	// 	{ID: 1, Name: "Dry"},
-	// 	{ID: 2, Name: "Oily"},
-	// 	{ID: 3, Name: "Combination"},
-	// 	{ID: 4, Name: "Dehydrated"},
-	// 	{ID: 5, Name: "Sensitive"},
-	// 	{ID: 6, Name: "Acne-Prone"},
-	// 	{ID: 7, Name: "Normal"},
-	// }
 	skinTypes := models.GetAllSkinTypes()
 	response, _ := json.Marshal(skinTypes)
 
@@ -58,6 +49,8 @@ func AddSkinType(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader((http.StatusBadRequest))
 		return
 	}
+	SkinType.Slug = utils.MakeSlug(SkinType.Name)
+
 	st, err := SkinType.CreateSkinType()
 
 	if st.ID > 0 {

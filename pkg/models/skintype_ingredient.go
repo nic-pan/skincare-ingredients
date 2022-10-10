@@ -2,8 +2,6 @@ package models
 
 import (
 	"github.com/jinzhu/gorm"
-
-	"github.com/nic_pan/skincare-ingredients/pkg/config"
 )
 
 type SkinTypeIngredient struct {
@@ -17,12 +15,6 @@ type SkinTypeIngredient struct {
 func (SkinTypeIngredient) BeforeCreate(db *gorm.DB) error {
 	db.SetJoinTableHandler(&Ingredient{}, "SkinType", &SkinTypeIngredient{})
 	return nil
-}
-
-func init() {
-	config.ConnectToDB()
-	db = config.GetDB()
-	db.AutoMigrate(&SkinTypeIngredient{})
 }
 
 func (SkinTypeIngredient *SkinTypeIngredient) CreateSkinTypeIngredient() *SkinTypeIngredient {
