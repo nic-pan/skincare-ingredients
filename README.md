@@ -26,4 +26,5 @@ Built with:
 * <a href="./combinations.json">combinations.json</a>
 
 ## Project tasks
+This project is a work in progress. Tasks and what's done can be found here:
 https://github.com/users/nic-pan/projects/1
