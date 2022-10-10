@@ -126,6 +126,43 @@ func AddCombination(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func UpdateCombination(writer http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+	id := params["id"]
+	if id == "" {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	updateId, _ := utils.ParseID(id)
+	combination, _ := models.GetCombinationById(updateId)
+	if combination == nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	updateRequest, _ := utils.ParseBodyToMap(request)
+	ingredients, _ := utils.ParseStringToArray(string(updateRequest["ingredients"]))
+
+	ingredient1, _ := models.GetIngredientByName(string(ingredients[0]))
+	ingredient2, _ := models.GetIngredientByName(string(ingredients[1]))
+
+	combination.Ingredient1 = ingredient1.ID
+	combination.Ingredient2 = ingredient2.ID
+	combination.Reason = utils.TrimQuotes(string(updateRequest["reason"]))
+	compatible, _ := strconv.ParseBool(string(updateRequest["isCompatible"]))
+	combination.IsCompatible = compatible
+
+	savedCombination, err := combination.UpdateCombination()
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	res, _ := json.Marshal(savedCombination)
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(res)
+}
+
 func DeleteCombination(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 	id := params["id"]

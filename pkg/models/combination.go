@@ -37,6 +37,11 @@ func GetCombinationForIngredients(ingr1 *Ingredient, ingr2 *Ingredient) *Combina
 	return &Combination
 }
 
+func (Combination *Combination) UpdateCombination() (*Combination, error) {
+	err := db.Save(&Combination).Error
+	return Combination, err
+}
+
 func DeleteCombination(Id uint) (*Combination, *gorm.DB) {
 	var Combination Combination
 	db := db.Where("ID=?", Id).Delete(Combination)
