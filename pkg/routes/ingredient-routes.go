@@ -12,6 +12,7 @@ var RegisterIngredientRoutes = func(router *mux.Router) {
 
 	router.HandleFunc("/ingredients", controllers.GetAllIngredients).Methods(http.MethodGet)
 	router.HandleFunc("/ingredient/{id}", controllers.GetIngredient).Methods(http.MethodGet)
+	router.HandleFunc("/ingredient/name/{name}", controllers.GetIngredientByName).Methods(http.MethodGet)
 	router.HandleFunc("/ingredient", controllers.AddIngredient).Methods(http.MethodPost)
 	router.HandleFunc("/ingredient/{id}", controllers.UpdateIngredient).Methods(http.MethodPut)
 	router.HandleFunc("/ingredient/{id}", controllers.DeleteIngredient).Methods(http.MethodDelete)

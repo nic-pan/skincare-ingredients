@@ -40,6 +40,25 @@ func GetIngredient(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+func GetIngredientByName(writer http.ResponseWriter, request *http.Request) {
+	params := mux.Vars(request)
+	name := params["name"]
+	if name == "" {
+		writer.WriteHeader(http.StatusBadRequest)
+	} else {
+		ingredient, _ := models.GetIngredientByName(name)
+		if ingredient == nil {
+			writer.WriteHeader(http.StatusNotFound)
+		} else {
+			response, _ := json.Marshal(ingredient)
+
+			writer.Header().Set("Content-Type", "application/json")
+			writer.WriteHeader(http.StatusOK)
+			writer.Write(response)
+		}
+	}
+}
+
 func AddIngredient(writer http.ResponseWriter, request *http.Request) {
 	// ingredient := make([]map[string]string, 0)
 	ingredientRequest, _ := utils.ParseBodyToMap(request)
@@ -63,6 +82,8 @@ func AddIngredient(writer http.ResponseWriter, request *http.Request) {
 		ingredient.Name = utils.TrimQuotes(string(ingredientRequest["name"]))
 		ingredient.Effect = utils.TrimQuotes(string(ingredientRequest["effects"]))
 		ingredient.SkinTypes = skinTypesArray
+		ingredient.Slug = utils.MakeSlug(ingredient.Name)
+
 		str, _ := json.Marshal(ingredient)
 		fmt.Println(string(str))
 
