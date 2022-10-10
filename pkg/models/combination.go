@@ -12,10 +12,11 @@ type Combination struct {
 	Reason       string `json:reason`
 }
 
-func (Combination *Combination) CreateCombination() *Combination {
+func (Combination *Combination) CreateCombination() (*Combination, error) {
 	db.NewRecord(Combination)
-	db.Create(&Combination)
-	return Combination
+	db := db.Create(&Combination)
+	err := db.Error
+	return Combination, err
 }
 
 func GetAllCombinations() []Combination {
@@ -32,7 +33,7 @@ func GetCombinationById(Id uint) (*Combination, *gorm.DB) {
 
 func GetCombinationForIngredients(ingr1 *Ingredient, ingr2 *Ingredient) *Combination {
 	var Combination Combination
-	db.Where("Ingredient1.ID=? AND Ingredient2.ID=?", ingr1.ID, ingr2.ID).Find(&Combination)
+	db.Where("ingredient1=? AND ingredient2=?", ingr1.ID, ingr2.ID).Find(&Combination)
 	return &Combination
 }
 
