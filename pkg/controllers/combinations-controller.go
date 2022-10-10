@@ -14,7 +14,12 @@ import (
 
 func GetAllCombinations(writer http.ResponseWriter, request *http.Request) {
 	combinations := models.GetAllCombinations()
-	response, _ := json.Marshal((combinations))
+	var resp []any
+	for _, combination := range combinations {
+		convertedCombination := convertCombinationResponse(&combination)
+		resp = append(resp, convertedCombination)
+	}
+	response, _ := json.Marshal(resp)
 
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
@@ -28,11 +33,12 @@ func GetCombination(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 	} else {
 		dbId, _ := utils.ParseID(id)
-		ingredient, _ := models.GetCombinationById(dbId)
-		if ingredient == nil {
+		combination, _ := models.GetCombinationById(dbId)
+		if combination == nil {
 			writer.WriteHeader(http.StatusNotFound)
 		} else {
-			response, _ := json.Marshal(ingredient)
+			resp := convertCombinationResponse(combination)
+			response, _ := json.Marshal(resp)
 
 			writer.Header().Set("Content-Type", "application/json")
 			writer.WriteHeader(http.StatusOK)
@@ -58,7 +64,8 @@ func GetCombinationOfIngredients(writer http.ResponseWriter, request *http.Reque
 			writer.Write([]byte("No information available for these ingredients."))
 			writer.WriteHeader(http.StatusNotFound)
 		} else {
-			response, _ := json.Marshal(combination)
+			resp := convertCombinationResponse(combination)
+			response, _ := json.Marshal(resp)
 
 			writer.Header().Set("Content-Type", "application/json")
 			writer.WriteHeader(http.StatusOK)
@@ -114,4 +121,20 @@ func AddCombination(writer http.ResponseWriter, request *http.Request) {
 			}
 		}
 	}
+}
+
+func convertCombinationResponse(combination *models.Combination) map[string]any {
+	var ingredients [2]string
+	ingr1, _ := models.GetIngredientById(combination.Ingredient1)
+	ingredients[0] = ingr1.Name
+	ingr2, _ := models.GetIngredientById(combination.Ingredient2)
+	ingredients[1] = ingr2.Name
+
+	response := make(map[string]any)
+	response["id"] = combination.ID
+	response["ingredients"] = ingredients
+	response["reason"] = combination.Reason
+	response["isCompatible"] = combination.IsCompatible
+
+	return response
 }
