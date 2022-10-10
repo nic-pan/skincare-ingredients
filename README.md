@@ -25,10 +25,5 @@ Built with:
 * <a href="./skinTypes.json">skinTypes.json</a>
 * <a href="./combinations.json">combinations.json</a>
 
-## TODOs
-
-- [ ] Add Combinations API
-- [ ] Add initial Combinations data
-- [ ] Design UI
-- [ ] Create UI
-- [ ] Make slugs for URLs in UI
+## Project tasks
+https://github.com/users/nic-pan/projects/1
