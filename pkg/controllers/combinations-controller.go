@@ -34,20 +34,20 @@ func GetCombination(writer http.ResponseWriter, request *http.Request) {
 	id := params["id"]
 	if id == "" {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		dbId, _ := utils.ParseID(id)
-		combination, _ := models.GetCombinationById(dbId)
-		if combination == nil {
-			writer.WriteHeader(http.StatusNotFound)
-		} else {
-			resp := convertCombinationResponse(combination)
-			response, _ := json.Marshal(resp)
-
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			writer.Write(response)
-		}
+		return
 	}
+	dbId, _ := utils.ParseID(id)
+	combination, _ := models.GetCombinationById(dbId)
+	if combination == nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	resp := convertCombinationResponse(combination)
+	response, _ := json.Marshal(resp)
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(response)
 }
 
 func GetCombinationOfIngredients(writer http.ResponseWriter, request *http.Request) {
@@ -55,26 +55,28 @@ func GetCombinationOfIngredients(writer http.ResponseWriter, request *http.Reque
 	if len(ingredients) > 2 {
 		writer.Write([]byte("Too many ingredients provided in request."))
 		writer.WriteHeader(http.StatusBadRequest)
-	} else if len(ingredients) < 2 {
+		return
+	}
+	if len(ingredients) < 2 {
 		writer.Write([]byte("Not enough ingredients. Please provide 2 in your request."))
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		ingr1, _ := models.GetIngredientByName(string(ingredients[0]))
-		ingr2, _ := models.GetIngredientByName(string(ingredients[1]))
-
-		combination := models.GetCombinationForIngredients(ingr1, ingr2)
-		if combination == nil {
-			writer.Write([]byte("No information available for these ingredients."))
-			writer.WriteHeader(http.StatusNotFound)
-		} else {
-			resp := convertCombinationResponse(combination)
-			response, _ := json.Marshal(resp)
-
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			writer.Write(response)
-		}
+		return
 	}
+	ingr1, _ := models.GetIngredientByName(string(ingredients[0]))
+	ingr2, _ := models.GetIngredientByName(string(ingredients[1]))
+
+	combination := models.GetCombinationForIngredients(ingr1, ingr2)
+	if combination == nil {
+		writer.Write([]byte("No information available for these ingredients."))
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	resp := convertCombinationResponse(combination)
+	response, _ := json.Marshal(resp)
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(response)
 }
 
 func AddCombination(writer http.ResponseWriter, request *http.Request) {
@@ -83,47 +85,49 @@ func AddCombination(writer http.ResponseWriter, request *http.Request) {
 	compatible, err := strconv.ParseBool(string(combinationRequest["isCompatible"]))
 	if err != nil {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		reason := utils.TrimQuotes(string(combinationRequest["reason"]))
-		fmt.Println(compatible)
-		fmt.Println(reason)
-		if len(ingredients) > 2 {
-			writer.Write([]byte("Too many ingredients provided in request."))
-			writer.WriteHeader(http.StatusBadRequest)
-		} else if len(ingredients) < 2 {
-			writer.Write([]byte("Not enough ingredients. Please provide 2 in your request."))
-			writer.WriteHeader(http.StatusBadRequest)
-		} else {
-			ingr1, _ := models.GetIngredientByName(string(ingredients[0]))
-			ingr2, _ := models.GetIngredientByName(string(ingredients[1]))
-
-			if ingr1 == nil || ingr2 == nil {
-				writer.WriteHeader(http.StatusBadRequest)
-			}
-
-			combination := &models.Combination{Ingredient1: ingr1.ID, Ingredient2: ingr2.ID, IsCompatible: compatible, Reason: reason}
-			result, err := combination.CreateCombination()
-
-			if result.ID > 0 {
-				res, _ := json.Marshal(result)
-
-				writer.Header().Set("Content-Type", "application/json")
-				writer.WriteHeader(http.StatusOK)
-				writer.Write(res)
-			} else {
-				if err != nil {
-					if strings.Contains(err.Error(), "1062") {
-						writer.WriteHeader(http.StatusBadRequest)
-						writer.Write([]byte("Ingredient with such name already exists."))
-					} else {
-						writer.WriteHeader(http.StatusInternalServerError)
-					}
-				} else {
-					writer.WriteHeader(http.StatusBadRequest)
-				}
-			}
-		}
+		return
 	}
+	reason := utils.TrimQuotes(string(combinationRequest["reason"]))
+	fmt.Println(compatible)
+	fmt.Println(reason)
+	if len(ingredients) > 2 {
+		writer.Write([]byte("Too many ingredients provided in request."))
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if len(ingredients) < 2 {
+		writer.Write([]byte("Not enough ingredients. Please provide 2 in your request."))
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	ingr1, _ := models.GetIngredientByName(string(ingredients[0]))
+	ingr2, _ := models.GetIngredientByName(string(ingredients[1]))
+
+	if ingr1 == nil || ingr2 == nil {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
+
+	combination := &models.Combination{Ingredient1: ingr1.ID, Ingredient2: ingr2.ID, IsCompatible: compatible, Reason: reason}
+	result, err := combination.CreateCombination()
+
+	if result.ID > 0 {
+		res, _ := json.Marshal(result)
+
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		writer.Write(res)
+		return
+	}
+	if err == nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !strings.Contains(err.Error(), "1062") {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writer.WriteHeader(http.StatusBadRequest)
+	writer.Write([]byte("Ingredient with such name already exists."))
 }
 
 func UpdateCombination(writer http.ResponseWriter, request *http.Request) {
@@ -168,18 +172,18 @@ func DeleteCombination(writer http.ResponseWriter, request *http.Request) {
 	id := params["id"]
 	if id == "" {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		deleteId, _ := utils.ParseID(id)
-
-		_, db := models.DeleteCombination(deleteId)
-		if db.Error != nil {
-			writer.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
+		return
 	}
+	deleteId, _ := utils.ParseID(id)
+
+	_, db := models.DeleteCombination(deleteId)
+	if db.Error != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
 }
 
 func convertCombinationResponse(combination *models.Combination) map[string]any {

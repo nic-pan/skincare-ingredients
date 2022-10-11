@@ -25,19 +25,19 @@ func GetSkinType(writer http.ResponseWriter, request *http.Request) {
 	id := params["id"]
 	if id == "" {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		dbId, _ := utils.ParseID(id)
-		skinType, _ := models.GetSkinTypeById(dbId)
-		if skinType == nil {
-			writer.WriteHeader(http.StatusNotFound)
-		} else {
-			response, _ := json.Marshal(skinType)
-
-			writer.Header().Set("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			writer.Write(response)
-		}
+		return
 	}
+	dbId, _ := utils.ParseID(id)
+	skinType, _ := models.GetSkinTypeById(dbId)
+	if skinType == nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	response, _ := json.Marshal(skinType)
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(response)
 }
 
 func AddSkinType(writer http.ResponseWriter, request *http.Request) {
@@ -58,19 +58,18 @@ func AddSkinType(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Content-Type", "application/json")
 		writer.WriteHeader(http.StatusOK)
 		writer.Write(res)
-	} else {
-		if err != nil {
-			if strings.Contains(err.Error(), "1062") {
-				writer.WriteHeader(http.StatusBadRequest)
-				writer.Write([]byte("Skin Type with such name already exists."))
-			} else {
-				writer.WriteHeader(http.StatusInternalServerError)
-			}
-		} else {
-			writer.WriteHeader(http.StatusBadRequest)
-		}
+		return
 	}
-
+	if err == nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !strings.Contains(err.Error(), "1062") {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writer.WriteHeader(http.StatusBadRequest)
+	writer.Write([]byte("Skin Type with such name already exists."))
 }
 
 func UpdateSkinType(writer http.ResponseWriter, request *http.Request) {
@@ -78,39 +77,39 @@ func UpdateSkinType(writer http.ResponseWriter, request *http.Request) {
 	id := params["id"]
 	if id == "" {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		updateId, _ := utils.ParseID(id)
-
-		SkinTypeToUpdate := &models.SkinType{}
-		utils.ParseBody(request, SkinTypeToUpdate)
-
-		st, _ := models.GetSkinTypeById(updateId)
-		if st != nil {
-			if SkinTypeToUpdate.Name != "" {
-				st.Name = SkinTypeToUpdate.Name
-			}
-			if SkinTypeToUpdate.Characteristics != "" {
-				st.Characteristics = SkinTypeToUpdate.Characteristics
-			}
-			savedST, err := st.UpdateSkinType()
-			if err == nil {
-				res, _ := json.Marshal(savedST)
-
-				writer.Header().Set("Content-Type", "application/json")
-				writer.WriteHeader(http.StatusOK)
-				writer.Write(res)
-			} else {
-				if strings.Contains(err.Error(), "1062") {
-					writer.WriteHeader(http.StatusBadRequest)
-					writer.Write([]byte("Skin Type with such name already exists."))
-				} else {
-					writer.WriteHeader(http.StatusInternalServerError)
-				}
-			}
-		} else {
-			writer.WriteHeader(http.StatusNotFound)
-		}
+		return
 	}
+	updateId, _ := utils.ParseID(id)
+
+	SkinTypeToUpdate := &models.SkinType{}
+	utils.ParseBody(request, SkinTypeToUpdate)
+
+	st, _ := models.GetSkinTypeById(updateId)
+	if st == nil {
+		writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if SkinTypeToUpdate.Name != "" {
+		st.Name = SkinTypeToUpdate.Name
+	}
+	if SkinTypeToUpdate.Characteristics != "" {
+		st.Characteristics = SkinTypeToUpdate.Characteristics
+	}
+	savedST, err := st.UpdateSkinType()
+	if err == nil {
+		res, _ := json.Marshal(savedST)
+
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusOK)
+		writer.Write(res)
+		return
+	}
+	if !strings.Contains(err.Error(), "1062") {
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	writer.WriteHeader(http.StatusBadRequest)
+	writer.Write([]byte("Skin Type with such name already exists."))
 }
 
 func DeleteSkinType(writer http.ResponseWriter, request *http.Request) {
@@ -118,17 +117,17 @@ func DeleteSkinType(writer http.ResponseWriter, request *http.Request) {
 	id := params["id"]
 	if id == "" {
 		writer.WriteHeader(http.StatusBadRequest)
-	} else {
-		deleteId, _ := utils.ParseID(id)
-
-		db := models.DeleteSkinType(deleteId)
-		if db.Error != nil {
-			fmt.Println(db.Error.Error())
-			writer.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		writer.Header().Set("Content-Type", "application/json")
-		writer.WriteHeader(http.StatusOK)
+		return
 	}
+	deleteId, _ := utils.ParseID(id)
+
+	db := models.DeleteSkinType(deleteId)
+	if db.Error != nil {
+		fmt.Println(db.Error.Error())
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
 }
