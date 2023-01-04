@@ -29,7 +29,7 @@
 	},
     {
 		"name": "hyaluronic acid",
-        "effects": "naturally present in the skin; its concentrations increase when there is damage in need of repair (e.g. dry lips); binds to water to help retain moisture; has antibacterial properties",
+        "effects": "naturally present in the skin; its concentrations increase when there is damage in need of repair (e.g. dry lips); binds to water to help retain moisture; has antibacterial properties;can dry out the skin if in a climates",
 		"skinTypes": [
 			"normal", "oily", "dry", "sensitive", "combination", "dehydrated", "acne-prone"
 		]
